@@ -142,12 +142,12 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 /* Newsletter */
 .newsletter{background:var(--ink);padding:clamp(4rem,10vw,8rem) var(--side-pad);text-align:center}
 .newsletter-inner{max-width:540px;margin:0 auto;border-top:1px solid var(--outline-dim);border-bottom:1px solid var(--outline-dim);padding:3.5rem 0}
-.newsletter-title{font-family:"Noto Serif JP",serif;font-size:clamp(1.3rem,3vw,1.85rem);color:var(--on-surface);margin-bottom:1.75rem}
+.newsletter-title{font-family:"Noto Serif JP",serif;font-size:clamp(1.3rem,3vw,1.85rem);color:var(--on-surface);margin-bottom:1.25rem}
 .newsletter-form{display:flex;gap:.65rem;flex-wrap:wrap;justify-content:center}
 .newsletter-input{flex:1;min-width:190px;max-width:300px;background:var(--surface-mid);border:1px solid var(--outline-dim);color:var(--on-surface);padding:.85rem 1.15rem;font-family:"Manrope",sans-serif;font-size:.78rem;outline:none;transition:border-color .2s}
 .newsletter-input:focus{border-color:rgba(242,202,80,.4)}
 .newsletter-input::placeholder{color:var(--outline)}
-.newsletter-btn{padding:.85rem 1.8rem;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;background:linear-gradient(135deg,#f2ca50,#d4af37);color:#241a00;transition:filter .2s;white-space:nowrap}
+.newsletter-btn{display:inline-block;margin-top:1.75rem;padding:.85rem 2.2rem;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;background:linear-gradient(135deg,#f2ca50,#d4af37);color:#241a00;transition:filter .2s;white-space:nowrap;text-decoration:none}
 .newsletter-btn:hover{filter:brightness(1.1)}
 .newsletter-note{margin-top:1.25rem;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--outline)}
 /* Footer */
@@ -426,12 +426,11 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 <!-- Newsletter -->
 <section class="newsletter">
   <div class="newsletter-inner reveal">
-    <h2 class="newsletter-title">最新のコレクションを受け取る</h2>
-    <div class="newsletter-form">
-      <input class="newsletter-input" type="email" placeholder="Email Address"/>
-      <button class="newsletter-btn">Join</button>
-    </div>
-    <p class="newsletter-note">Limited digital editions released monthly.</p>
+    <h2 class="newsletter-title">お問い合わせ</h2>
+    <p>作品のご相談・ご購入については、こちらからお気軽にご連絡ください。</p>
+    <a href="mailto:pidam.gallery1@gmail.com" class="newsletter-btn">
+      メールで問い合わせる
+    </a>
   </div>
 </section>
 
