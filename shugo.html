@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>守護神獣診断 | Pidam Gallery</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;700&family=Cinzel+Decorative:wght@400;700&family=Noto+Sans+JP:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0a12;
+    --parchment: #f5f0e8;
+    --gold: #c9a84c;
+    --gold-light: #e8d08a;
+    --crimson: #8b1a2b;
+    --jade: #2d6a4f;
+    --mist: #d4cfc6;
+    --deep: #12101e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--ink);
+    color: var(--parchment);
+    font-family: 'Noto Serif JP', serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background atmospheric layers */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(201,168,76,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 90%, rgba(139,26,43,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 100% 100% at 50% 50%, #0d0b18 0%, #080610 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Ink wash texture overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* === HEADER === */
+  .site-header {
+    width: 100%;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+  }
+
+  .logo {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 13px;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    text-decoration: none;
+    opacity: 0.8;
+  }
+
+  .header-ornament {
+    font-size: 18px;
+    opacity: 0.3;
+  }
+
+  /* === SCREENS === */
+  .screen {
+    display: none;
+    width: 100%;
+    max-width: 680px;
+    padding: 40px 24px 80px;
+    animation: fadeIn 0.8s ease forwards;
+  }
+
+  .screen.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* === INTRO SCREEN === */
+  .intro-seal {
+    text-align: center;
+    padding: 60px 0 40px;
+  }
+
+  .seal-ring {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 32px;
+    position: relative;
+  }
+
+  .seal-ring svg {
+    width: 100%;
+    height: 100%;
+    animation: rotateSeal 20s linear infinite;
+  }
+
+  @keyframes rotateSeal {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .seal-inner {
+    position: absolute;
+    inset: 20px;
+    background: radial-gradient(circle, rgba(201,168,76,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+  }
+
+  .intro-kana {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    opacity: 0.7;
+    margin-bottom: 12px;
+  }
+
+  .intro-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 700;
+    color: var(--parchment);
+    letter-spacing: 0.1em;
+    line-height: 1.4;
+    margin-bottom: 20px;
+  }
+
+  .intro-title span {
+    color: var(--gold);
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 28px auto;
+    max-width: 300px;
+  }
+
+  .divider-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(201,168,76,0.4), transparent);
+  }
+
+  .divider-diamond {
+    width: 6px;
+    height: 6px;
+    background: var(--gold);
+    transform: rotate(45deg);
+    opacity: 0.6;
+  }
+
+  .intro-desc {
+    font-size: 14px;
+    line-height: 2;
+    color: var(--mist);
+    opacity: 0.85;
+    text-align: center;
+    max-width: 480px;
+    margin: 0 auto 48px;
+  }
+
+  /* === BUTTONS === */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, rgba(201,168,76,0.15) 0%, rgba(201,168,76,0.08) 100%);
+    border: 1px solid rgba(201,168,76,0.5);
+    color: var(--gold-light);
+    font-family: 'Noto Serif JP', serif;
+    font-size: 15px;
+    letter-spacing: 0.15em;
+    padding: 16px 48px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(201,168,76,0.2), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .btn-primary:hover::before { opacity: 1; }
+  .btn-primary:hover {
+    border-color: rgba(201,168,76,0.8);
+    box-shadow: 0 0 30px rgba(201,168,76,0.15);
+    transform: translateY(-2px);
+  }
+
+  /* === PROGRESS === */
+  .progress-bar {
+    width: 100%;
+    height: 2px;
+    background: rgba(201,168,76,0.1);
+    margin-bottom: 48px;
+    position: relative;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(to right, var(--crimson), var(--gold));
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+  }
+
+  .progress-fill::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--gold);
+  }
+
+  .progress-label {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    opacity: 0.5;
+    text-align: right;
+    margin-bottom: 8px;
+  }
+
+  /* === QUESTION === */
+  .question-number {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    opacity: 0.5;
+    margin-bottom: 16px;
+  }
+
+  .question-text {
+    font-size: clamp(17px, 3.5vw, 22px);
+    font-weight: 400;
+    line-height: 1.8;
+    color: var(--parchment);
+    margin-bottom: 40px;
+    min-height: 80px;
+  }
+
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .option-btn {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(201,168,76,0.2);
+    color: var(--mist);
+    font-family: 'Noto Serif JP', serif;
+    font-size: 14px;
+    line-height: 1.7;
+    padding: 20px 18px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .option-btn::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--gold);
+    transform: scaleY(0);
+    transition: transform 0.25s ease;
+  }
+
+  .option-btn:hover {
+    background: rgba(201,168,76,0.06);
+    border-color: rgba(201,168,76,0.5);
+    color: var(--parchment);
+    transform: translateX(4px);
+  }
+
+  .option-btn:hover::before {
+    transform: scaleY(1);
+  }
+
+  .option-letter {
+    display: inline-block;
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 10px;
+    color: var(--gold);
+    opacity: 0.5;
+    margin-bottom: 6px;
+    letter-spacing: 0.1em;
+  }
+
+  /* === LOADING === */
+  #loading-screen {
+    text-align: center;
+    padding: 100px 24px;
+  }
+
+  .loading-kanji {
+    font-size: 72px;
+    opacity: 0;
+    animation: kanjiReveal 3s ease forwards;
+    display: block;
+    margin-bottom: 32px;
+  }
+
+  @keyframes kanjiReveal {
+    0% { opacity: 0; transform: scale(0.5) rotate(-10deg); filter: blur(20px); }
+    50% { opacity: 1; transform: scale(1.1) rotate(2deg); filter: blur(0); }
+    100% { opacity: 0.8; transform: scale(1) rotate(0); }
+  }
+
+  .loading-text {
+    font-size: 13px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    opacity: 0;
+    animation: fadeIn 1s ease 1s forwards;
+  }
+
+  .loading-dots {
+    display: inline-block;
+    animation: dots 1.5s infinite;
+  }
+
+  @keyframes dots {
+    0%, 20% { content: ''; }
+    40% { content: '・'; }
+    60% { content: '・・'; }
+    80%, 100% { content: '・・・'; }
+  }
+
+  /* === RESULT === */
+  .result-header {
+    text-align: center;
+    padding: 20px 0 40px;
+  }
+
+  .result-pre {
+    font-size: 11px;
+    letter-spacing: 0.35em;
+    color: var(--gold);
+    opacity: 0.6;
+    margin-bottom: 16px;
+  }
+
+  .beast-icon {
+    font-size: 80px;
+    display: block;
+    margin: 0 auto 24px;
+    animation: beastAppear 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    opacity: 0;
+    filter: drop-shadow(0 0 30px rgba(201,168,76,0.4));
+  }
+
+  @keyframes beastAppear {
+    from { opacity: 0; transform: scale(0.3) rotate(-20deg); filter: blur(10px) drop-shadow(0 0 0px transparent); }
+    to { opacity: 1; transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 30px rgba(201,168,76,0.4)); }
+  }
+
+  .beast-name {
+    font-size: clamp(32px, 8vw, 52px);
+    font-weight: 700;
+    color: var(--gold-light);
+    letter-spacing: 0.2em;
+    margin-bottom: 8px;
+    text-shadow: 0 0 40px rgba(201,168,76,0.3);
+  }
+
+  .beast-name-ja {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    opacity: 0.6;
+    margin-bottom: 32px;
+  }
+
+  .result-card {
+    background: linear-gradient(135deg, rgba(201,168,76,0.05) 0%, rgba(139,26,43,0.05) 100%);
+    border: 1px solid rgba(201,168,76,0.2);
+    padding: 32px;
+    margin-bottom: 24px;
+    position: relative;
+  }
+
+  .result-card::before, .result-card::after {
+    content: '✦';
+    position: absolute;
+    color: var(--gold);
+    opacity: 0.3;
+    font-size: 10px;
+  }
+
+  .result-card::before { top: 12px; left: 16px; }
+  .result-card::after { bottom: 12px; right: 16px; }
+
+  .result-section-title {
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    color: var(--gold);
+    opacity: 0.6;
+    margin-bottom: 12px;
+  }
+
+  .result-desc {
+    font-size: 15px;
+    line-height: 2;
+    color: var(--mist);
+  }
+
+  .traits-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .trait-tag {
+    background: rgba(201,168,76,0.1);
+    border: 1px solid rgba(201,168,76,0.25);
+    color: var(--gold-light);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    padding: 4px 14px;
+  }
+
+  /* CTA Section */
+  .cta-section {
+    text-align: center;
+    padding: 40px 0;
+    border-top: 1px solid rgba(201,168,76,0.1);
+    margin-top: 32px;
+  }
+
+  .cta-pre {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    opacity: 0.6;
+    margin-bottom: 12px;
+  }
+
+  .cta-title {
+    font-size: 18px;
+    color: var(--parchment);
+    margin-bottom: 8px;
+  }
+
+  .cta-sub {
+    font-size: 13px;
+    color: var(--mist);
+    opacity: 0.7;
+    margin-bottom: 28px;
+    line-height: 1.8;
+  }
+
+  .btn-booth {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, rgba(201,168,76,0.25) 0%, rgba(201,168,76,0.1) 100%);
+    border: 1px solid rgba(201,168,76,0.6);
+    color: var(--gold-light);
+    font-family: 'Noto Serif JP', serif;
+    font-size: 14px;
+    letter-spacing: 0.15em;
+    padding: 14px 40px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin-bottom: 16px;
+  }
+
+  .btn-booth:hover {
+    background: linear-gradient(135deg, rgba(201,168,76,0.35) 0%, rgba(201,168,76,0.2) 100%);
+    box-shadow: 0 0 40px rgba(201,168,76,0.2);
+    transform: translateY(-2px);
+  }
+
+  .btn-retry {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 1px solid rgba(201,168,76,0.15);
+    color: var(--mist);
+    font-family: 'Noto Serif JP', serif;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    padding: 10px 28px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0.7;
+  }
+
+  .btn-retry:hover {
+    border-color: rgba(201,168,76,0.3);
+    opacity: 1;
+  }
+
+  /* Share */
+  .share-section {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 24px;
+  }
+
+  .share-btn {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--mist);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .share-btn:hover {
+    background: rgba(255,255,255,0.08);
+  }
+
+  /* Floating particles */
+  .particles {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: var(--gold);
+    border-radius: 50%;
+    opacity: 0;
+    animation: float var(--dur, 8s) var(--delay, 0s) infinite ease-in-out;
+  }
+
+  @keyframes float {
+    0% { opacity: 0; transform: translateY(100vh) translateX(0); }
+    10% { opacity: 0.4; }
+    90% { opacity: 0.1; }
+    100% { opacity: 0; transform: translateY(-100px) translateX(var(--drift, 20px)); }
+  }
+
+  /* Corner decorations */
+  .corner-dec {
+    position: fixed;
+    width: 80px;
+    height: 80px;
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .corner-dec.tl { top: 20px; left: 20px; border-top: 1px solid var(--gold); border-left: 1px solid var(--gold); }
+  .corner-dec.br { bottom: 20px; right: 20px; border-bottom: 1px solid var(--gold); border-right: 1px solid var(--gold); }
+
+  @media (max-width: 500px) {
+    .options-grid { grid-template-columns: 1fr; }
+    .site-header { padding: 16px 20px; }
+    .screen { padding: 24px 16px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Atmospheric particles -->
+<div class="particles" id="particles"></div>
+<div class="corner-dec tl"></div>
+<div class="corner-dec br"></div>
+
+<div class="wrapper">
+  <header class="site-header">
+    <a href="https://pidam-gallery.booth.pm" class="logo" target="_blank">Pidam Gallery</a>
+    <span class="header-ornament">✦ ✦ ✦</span>
+    <span style="font-size:11px; letter-spacing:0.2em; color:var(--gold); opacity:0.4;">神獣診断</span>
+  </header>
+
+  <!-- ===== INTRO ===== -->
+  <div class="screen active" id="screen-intro">
+    <div class="intro-seal">
+      <div class="seal-ring">
+        <svg viewBox="0 0 100 100" fill="none">
+          <circle cx="50" cy="50" r="46" stroke="rgba(201,168,76,0.3)" stroke-width="0.5" stroke-dasharray="4 3"/>
+          <circle cx="50" cy="50" r="38" stroke="rgba(201,168,76,0.2)" stroke-width="0.5"/>
+          <text x="50" y="56" text-anchor="middle" fill="rgba(201,168,76,0.4)" font-size="8" letter-spacing="6" font-family="serif">守護神獣</text>
+        </svg>
+        <div class="seal-inner">🌀</div>
+      </div>
+
+      <p class="intro-kana">GUARDIAN BEAST DIAGNOSIS</p>
+      <h1 class="intro-title">あなたの<span>守護神獣</span>を<br>知る診断</h1>
+
+      <div class="divider">
+        <div class="divider-line"></div>
+        <div class="divider-diamond"></div>
+        <div class="divider-line"></div>
+      </div>
+
+      <p class="intro-desc">
+        古来、人はそれぞれ異なる神獣に守護されてきた。<br>
+        龍、鳳凰、白蛇、九尾の狐、麒麟、玄武、白虎——<br>
+        7つの問いに答えて、あなたの守護者を見つけよう。
+      </p>
+
+      <button class="btn-primary" onclick="startQuiz()">
+        ✦ &nbsp;診断を始める&nbsp; ✦
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== QUIZ ===== -->
+  <div class="screen" id="screen-quiz">
+    <div class="progress-label" id="progress-label">Q1 / 6</div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+    <p class="question-number" id="q-number">QUESTION 01</p>
+    <p class="question-text" id="q-text"></p>
+    <div class="options-grid" id="options-container"></div>
+  </div>
+
+  <!-- ===== LOADING ===== -->
+  <div class="screen" id="screen-loading" style="text-align:center; padding: 80px 24px;">
+    <span class="loading-kanji" id="loading-kanji">⛩️</span>
+    <p class="loading-text">神獣を召喚しています<span class="loading-dots">・・・</span></p>
+  </div>
+
+  <!-- ===== RESULT ===== -->
+  <div class="screen" id="screen-result">
+    <div class="result-header">
+      <p class="result-pre">あなたの守護神獣は</p>
+      <span class="beast-icon" id="result-icon"></span>
+      <h2 class="beast-name" id="result-name"></h2>
+      <p class="beast-name-ja" id="result-name-sub"></p>
+    </div>
+
+    <div class="result-card" style="margin-bottom:16px;">
+      <p class="result-section-title">— 神獣からのメッセージ —</p>
+      <p class="result-desc" id="result-message"></p>
+    </div>
+
+    <div class="result-card" style="margin-bottom:32px;">
+      <p class="result-section-title">— あなたの資質 —</p>
+      <div class="traits-grid" id="result-traits"></div>
+    </div>
+
+    <div class="cta-section">
+      <p class="cta-pre">✦ &nbsp; PIDAM GALLERY &nbsp; ✦</p>
+      <h3 class="cta-title" id="cta-title">守護神獣のアート作品を見る</h3>
+      <p class="cta-sub" id="cta-sub">あなたの守護者の姿を、東洋神話の美で描いた作品を販売しています。</p>
+      <div>
+        <a class="btn-booth" href="https://pidam-gallery.booth.pm" target="_blank">
+          ✦ &nbsp;BOOTH で作品を見る
+        </a>
+      </div>
+      <div class="share-section">
+        <button class="share-btn" onclick="shareToX()">X（Twitter）でシェア</button>
+        <button class="share-btn" onclick="copyResult()">結果をコピー</button>
+      </div>
+      <br><br>
+      <button class="btn-retry" onclick="resetQuiz()">↩ もう一度診断する</button>
+    </div>
+  </div>
+
+</div><!-- /wrapper -->
+
+<script>
+// ===== DATA =====
+const questions = [
+  {
+    text: "深夜、一人でいるとき、あなたはどんな気持ちになることが多いですか？",
+    options: [
+      { text: "静かな力が湧いてくる。夜が自分の時間だと感じる", beast: "白蛇" },
+      { text: "次の日に向けて構想を練り、わくわくしている", beast: "龍" },
+      { text: "誰かのことを思い、温かい気持ちになっている", beast: "鳳凰" },
+      { text: "物事の深い意味について、ひとり考えを巡らせる", beast: "九尾の狐" }
+    ]
+  },
+  {
+    text: "あなたの「強さ」はどちらに近いですか？",
+    options: [
+      { text: "嵐のような情熱と、圧倒的なエネルギー", beast: "龍" },
+      { text: "揺るぎない静寂と、底知れぬ忍耐", beast: "玄武" },
+      { text: "華やかさの裏に隠された、緻密な洞察", beast: "九尾の狐" },
+      { text: "人を照らす光のような、包容力と再生の力", beast: "鳳凰" }
+    ]
+  },
+  {
+    text: "色を選ぶとしたら、どれに最も引かれますか？",
+    options: [
+      { text: "深い紺と金——夜空と星の色", beast: "龍" },
+      { text: "緋色と朱——炎の揺らぎのような色", beast: "鳳凰" },
+      { text: "白と銀——霧の中の月明かり", beast: "白蛇" },
+      { text: "深緑と黒——古い森の底の色", beast: "玄武" }
+    ]
+  },
+  {
+    text: "困難に直面したとき、あなたはどう動きますか？",
+    options: [
+      { text: "正面から突き破る。恐れは感じない", beast: "白虎" },
+      { text: "あらゆる情報を集め、最善の策を静かに練る", beast: "九尾の狐" },
+      { text: "仲間を守るために、自分が盾になる", beast: "麒麟" },
+      { text: "一度沈んでも、必ず甦る。それが自分だと知っている", beast: "鳳凰" }
+    ]
+  },
+  {
+    text: "あなたにとって「美しいもの」とは？",
+    options: [
+      { text: "朽ちることなく輝き続けるもの", beast: "麒麟" },
+      { text: "変化しながらも、本質を失わないもの", beast: "白蛇" },
+      { text: "激しく燃えて、跡を残すもの", beast: "鳳凰" },
+      { text: "謎めいていて、全ては解き明かせないもの", beast: "九尾の狐" }
+    ]
+  },
+  {
+    text: "あなたが最も大切にしていることは何ですか？",
+    options: [
+      { text: "自由と、誰にも縛られない魂", beast: "龍" },
+      { text: "知恵と、真実を見抜く眼", beast: "九尾の狐" },
+      { text: "調和と、生きとし生けるものへの慈しみ", beast: "麒麟" },
+      { text: "守ることと、変わらぬ誠実さ", beast: "玄武" }
+    ]
+  },
+  {
+    text: "あなたが最も惹かれる「生き方」はどれですか？",
+    options: [
+      { text: "誰よりも速く、誰よりも鋭く。刃のように生きる", beast: "白虎" },
+      { text: "深く、静かに。時間をかけて真実に近づく", beast: "玄武" },
+      { text: "変幻自在に。誰も自分の本質を掴めない", beast: "白蛇" },
+      { text: "高みへ。限界など、最初からないと知っている", beast: "龍" }
+    ]
+  }
+];
+
+const beasts = {
+  "龍": {
+    icon: "🐉",
+    sub: "RYŪ / DRAGON",
+    message: "あなたの守護者は龍——天を統べる、最も高貴な神獣です。\n\n龍に守護される者は、生まれながらにして強大な意志と、嵐を呼ぶほどのエネルギーを宿しています。困難を前にしても怯まず、むしろその逆境が翼となる。あなたの魂には、自らの道を切り拓く力が刻まれています。\n\n龍はあなたに告げる——「恐れるな。嵐こそが、あなたを高みへ連れていく」",
+    traits: ["圧倒的なカリスマ", "開拓者の精神", "高い理想", "嵐のような情熱", "天賦の才"]
+  },
+  "鳳凰": {
+    icon: "🦅",
+    sub: "HŌŌ / PHOENIX",
+    message: "あなたの守護者は鳳凰——炎の中から甦る、不滅の霊鳥です。\n\n鳳凰に守護される者は、何度倒れても必ず立ち上がる再生の力を持っています。あなたの存在そのものが光であり、周囲の人々を温め、導く炎となる。\n\n鳳凰はあなたに告げる——「燃え尽きることを恐れるな。あなたは灰の中から、さらに美しく甦る」",
+    traits: ["不屈の精神", "人を照らす包容力", "華やかな存在感", "変容と再生", "深い慈愛"]
+  },
+  "白蛇": {
+    icon: "🐍",
+    sub: "SHIRO HEBI / WHITE SERPENT",
+    message: "あなたの守護者は白蛇——古来より知恵と変容を司る、神秘の使い者です。\n\n白蛇に守護される者は、表面に見えない深みと、静寂の中に宿る洞察力を持っています。あなたは月の光のように、ひっそりとしていながら、確かにその場を照らしている。\n\n白蛇はあなたに告げる——「脱皮を恐れるな。変わることこそが、あなたの本質だ」",
+    traits: ["深い洞察力", "神秘的な魅力", "静かな意志", "変容の力", "直感と予知"]
+  },
+  "九尾の狐": {
+    icon: "🦊",
+    sub: "KYŪBI NO KITSUNE / NINE-TAILED FOX",
+    message: "あなたの守護者は九尾の狐——千年の知恵を宿す、最も謎めいた神獣です。\n\n九尾の狐に守護される者は、人の心を読む鋭さと、どんな局面でも最善手を見つけ出す知略を持っています。あなたの魅力は謎めいていて、誰もその全てを知ることはできない。\n\n九尾の狐はあなたに告げる——「あなたの知恵は武器であり、芸術だ。惜しみなく使え」",
+    traits: ["比類なき知略", "謎めいた魅力", "鋭い観察眼", "自在な変化", "千年の知恵"]
+  },
+  "麒麟": {
+    icon: "🦄",
+    sub: "KIRIN / QILIN",
+    message: "あなたの守護者は麒麟——太平の世にのみ現れる、聖なる霊獣です。\n\n麒麟に守護される者は、生まれながらの高潔さと、他者を傷つけることを良しとしない深い倫理観を持っています。あなたの存在は、周囲に安らぎと調和をもたらす。\n\n麒麟はあなたに告げる——「その優しさは弱さではない。世界で最も稀有で、最も力ある資質だ」",
+    traits: ["高潔な精神", "深い慈しみ", "調和をもたらす力", "揺るぎない正義感", "聖なる品格"]
+  },
+  "玄武": {
+    icon: "🐢",
+    sub: "GENBU / BLACK TORTOISE",
+    message: "あなたの守護者は玄武——北を守る、大地のような神獣です。\n\n玄武に守護される者は、どんな嵐にも揺れない堅牢な意志と、長い時間をかけて物事を成し遂げる忍耐力を持っています。あなたの存在は大地のように確かで、信頼の象徴となる。\n\n玄武はあなたに告げる——「急ぐな。あなたの時間は、誰よりも深く刻まれていく」",
+    traits: ["揺るぎない忍耐", "深い誠実さ", "守護する意志", "長期的な視野", "大地の安定感"]
+  },
+  "白虎": {
+    icon: "🐯",
+    sub: "BYAKKO / WHITE TIGER",
+    message: "あなたの守護者は白虎——西を守る、疾風のような神獣です。\n\n白虎に守護される者は、瞬時に本質を見抜く鋭敏な感覚と、誰よりも速く行動に移す決断力を持っています。迷いなく前へ進む、その姿そのものが力だ。あなたの魂には、刃のような純粋さが宿っている。\n\n白虎はあなたに告げる——「考えるな、感じろ。あなたの直感は、どんな知恵よりも速く真実に届く」",
+    traits: ["鋭い直感", "圧倒的な行動力", "純粋な強さ", "疾風の決断力", "孤高の精神"]
+  }
+};
+
+// ===== STATE =====
+let scores = {};
+let currentQ = 0;
+
+// ===== PARTICLES =====
+(function createParticles() {
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 25; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.setProperty('--dur', (6 + Math.random() * 10) + 's');
+    p.style.setProperty('--delay', (Math.random() * 8) + 's');
+    p.style.setProperty('--drift', ((Math.random() - 0.5) * 100) + 'px');
+    container.appendChild(p);
+  }
+})();
+
+// ===== QUIZ LOGIC =====
+function startQuiz() {
+  scores = {};
+  currentQ = 0;
+  showScreen('screen-quiz');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentQ];
+  document.getElementById('q-number').textContent = 'QUESTION 0' + (currentQ + 1);
+  document.getElementById('q-text').textContent = q.text;
+  document.getElementById('progress-label').textContent = `Q${currentQ + 1} / ${questions.length}`;
+  document.getElementById('progress-fill').style.width = ((currentQ / questions.length) * 100) + '%';
+
+  const container = document.getElementById('options-container');
+  container.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="option-letter">${letters[i]}</span><br>${opt.text}`;
+    btn.onclick = () => selectOption(opt.beast);
+    container.appendChild(btn);
+  });
+}
+
+function selectOption(beast) {
+  scores[beast] = (scores[beast] || 0) + 1;
+  currentQ++;
+
+  if (currentQ < questions.length) {
+    document.getElementById('screen-quiz').style.animation = 'none';
+    document.getElementById('screen-quiz').offsetHeight;
+    document.getElementById('screen-quiz').style.animation = '';
+    renderQuestion();
+  } else {
+    showLoading();
+  }
+}
+
+function showLoading() {
+  showScreen('screen-loading');
+
+  // Pick result beast based on scores
+  const result = Object.entries(scores).sort((a,b) => b[1]-a[1])[0][0];
+
+  // Show loading for 2.5s with the beast's kanji
+  const kanjiMap = { "龍":"龍", "鳳凰":"鳳", "白蛇":"蛇", "九尾の狐":"狐", "麒麟":"麟", "玄武":"武", "白虎":"虎" };
+  document.getElementById('loading-kanji').textContent = kanjiMap[result] || '✦';
+
+  setTimeout(() => showResult(result), 2800);
+}
+
+function showResult(beastKey) {
+  const beast = beasts[beastKey];
+  document.getElementById('result-icon').textContent = beast.icon;
+  document.getElementById('result-name').textContent = beastKey;
+  document.getElementById('result-name-sub').textContent = beast.sub;
+  document.getElementById('result-message').textContent = beast.message;
+
+  const traitsContainer = document.getElementById('result-traits');
+  traitsContainer.innerHTML = '';
+  beast.traits.forEach(t => {
+    const tag = document.createElement('span');
+    tag.className = 'trait-tag';
+    tag.textContent = t;
+    traitsContainer.appendChild(tag);
+  });
+
+  document.getElementById('cta-title').textContent = `「${beastKey}」のアート作品を見る`;
+
+  showScreen('screen-result');
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function resetQuiz() {
+  showScreen('screen-intro');
+  document.getElementById('screen-intro').style.animation = 'none';
+  document.getElementById('screen-intro').offsetHeight;
+  document.getElementById('screen-intro').style.animation = '';
+}
+
+// Share
+function shareToX() {
+  const name = document.getElementById('result-name').textContent;
+  const icon = document.getElementById('result-icon').textContent;
+  const text = `私の守護神獣は「${name}」${icon}でした！\n\n#守護神獣診断 #PidamGallery\nhttps://pidam-gallery.booth.pm`;
+  window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(text), '_blank');
+}
+
+function copyResult() {
+  const name = document.getElementById('result-name').textContent;
+  const icon = document.getElementById('result-icon').textContent;
+  const text = `【守護神獣診断】\n私の守護神獣は「${name}」${icon}でした！\n\n#守護神獣診断 #PidamGallery`;
+  navigator.clipboard.writeText(text).then(() => {
+    alert('結果をコピーしました！');
+  });
+}
+</script>
+</body>
+</html>
