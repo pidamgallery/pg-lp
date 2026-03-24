@@ -99,7 +99,7 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 }
 .shindan-label{
   font-family:"Noto Serif JP",serif;
-  font-size:.65rem;
+  font-size:1rem;
   letter-spacing:.5em;
   text-transform:uppercase;
   color:var(--outline);
@@ -153,7 +153,7 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
   transform:rotate(15deg) scale(1.15);
 }
 .btn-shindan-sub{
-  font-size:.62rem;
+  font-size:0.85rem;
   letter-spacing:.22em;
   text-transform:uppercase;
   color:rgba(36,26,0,.6);
@@ -177,7 +177,15 @@ body::before{content:"";position:fixed;inset:0;background-image:url("data:image/
 }
 .shindan-deco-line{width:48px;height:1px;background:linear-gradient(to right,transparent,var(--outline-dim))}
 .shindan-deco-line:last-child{background:linear-gradient(to left,transparent,var(--outline-dim))}
-.shindan-deco-text{font-size:.58rem;letter-spacing:.28em;text-transform:uppercase;color:var(--outline);opacity:.7}
+.shindan-deco-text{
+  font-size:1rem;
+  letter-spacing:.28em;
+  text-transform:uppercase;
+  color:var(--outline);
+  opacity:.7
+}.btn-shindan{
+  font-size:1.6rem !important;
+}
 
 /* ── Category Tabs ── */
 .cats{background:var(--ink);padding:3rem var(--side-pad)}
