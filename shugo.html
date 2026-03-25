@@ -701,7 +701,7 @@
       <h3 class="cta-title" id="cta-title">守護神獣のアート作品を見る</h3>
       <p class="cta-sub" id="cta-sub">あなたの守護者の姿を、東洋神話の美で描いた作品を販売しています。</p>
       <div>
-        <a class="btn-booth" href="https://pidam-gallery.booth.pm" target="_blank">
+        <a class="btn-booth" id="booth-link" href="https://pidam-gallery.booth.pm" target="_blank">
           ✦ &nbsp;BOOTH で作品を見る
         </a>
       </div>
@@ -711,6 +711,8 @@
       </div>
       <br><br>
       <button class="btn-retry" onclick="resetQuiz()">↩ もう一度診断する</button>
+      <br><br>
+      <a class="btn-retry" href="index.html" style="text-decoration:none; display:inline-flex;">🏠 &nbsp;ギャラリーに戻る</a>
     </div>
   </div>
 
@@ -829,6 +831,17 @@ const beasts = {
   }
 };
 
+// ===== BOOTH URLs =====
+const boothUrls = {
+  "白蛇":    "https://pidam-gallery.booth.pm/items/8010738",
+  "鳳凰":    "https://pidam-gallery.booth.pm/items/8011377",
+  "龍":      "https://pidam-gallery.booth.pm/items/8024975",
+  "麒麟":    "https://pidam-gallery.booth.pm/items/8125518",
+  "玄武":    "https://pidam-gallery.booth.pm/items/8124975",
+  "白虎":    "https://pidam-gallery.booth.pm/items/8125636",
+  "九尾の狐":"https://pidam-gallery.booth.pm/items/8127231"
+};
+
 // ===== STATE =====
 let scores = {};
 let currentQ = 0;
@@ -917,7 +930,11 @@ function showResult(beastKey) {
     traitsContainer.appendChild(tag);
   });
 
-  document.getElementById('cta-title').textContent = `「${beastKey}」のアート作品を見る`;
+  const url = boothUrls[beastKey] || 'https://pidam-gallery.booth.pm';
+  document.getElementById('cta-title').innerHTML = `「<a href="${url}" target="_blank" style="color:var(--gold-light); text-decoration:underline; text-underline-offset:4px;">${beastKey}</a>」のアート作品を見る`;
+
+  const boothLink = document.getElementById('booth-link');
+  boothLink.href = boothUrls[beastKey] || 'https://pidam-gallery.booth.pm';
 
   showScreen('screen-result');
 }
